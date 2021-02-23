@@ -5,9 +5,10 @@ import PropTypes from 'prop-types';
 import ProgressButtons from './ProgressButtons';
 
 class ProgressStep extends Component {
+  scrollRef;
   onNextStep = async () => {
     this.props.onNext && (await this.props.onNext());
-
+    this.scrollRef && this.scrollRef.scrollTo({x: 0, y: 0, animate: true})
     // Return out of method before moving to next step if errors exist.
     if (this.props.errors) {
       return;
@@ -19,6 +20,7 @@ class ProgressStep extends Component {
   onPreviousStep = () => {
     // Changes active index and calls previous function passed by parent
     this.props.onPrevious && this.props.onPrevious();
+    this.scrollRef && this.scrollRef.scrollTo({x: 0, y: 0, animate: true})
     this.props.setActiveStep(this.props.activeStep - 1);
   };
 
@@ -35,7 +37,7 @@ class ProgressStep extends Component {
 
     const btnTextStyle = {
       color: '#007AFF',
-      fontSize: 18,
+      fontSize: 16,
       ...this.props.nextBtnTextStyle
     };
 
@@ -100,7 +102,7 @@ class ProgressStep extends Component {
     return (
       <View style={{ flex: 1 }}>
         {isScrollable
-          ? <ScrollView {...scrollViewProps}>{this.props.children}</ScrollView>
+          ? <ScrollView {...scrollViewProps} ref={ ref => this.scrollRef = ref}>{this.props.children}</ScrollView>
           : <View {...viewProps}>{this.props.children}</View>}
 
         {buttonRow}
